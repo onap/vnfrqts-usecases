@@ -9,8 +9,6 @@
 **Manual Scale Out Use Case**
 ==================================
 
-(VNF Perspective)
-
 In its Beijing Release, ONAP will support the ability to manually scale out VNF Components. Below is the Sequence Diagram for how Manual Scale Out will work in ONAP.
 
 |image0|

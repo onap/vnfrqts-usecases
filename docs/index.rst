@@ -3,7 +3,7 @@
 .. Copyright 2017 AT&T Intellectual Property.  All rights reserved.
 
 
-Manual Scale Out Use Case
+VNF Provider Use Cases
 --------------------------
 
 .. toctree::

@@ -29,12 +29,12 @@ VNF Impacts
 ------------------------
 
 For VNFs to make use of the Manual Scaling Capabilities of ONAP, they must support the following functionality:
-  1. VNFs must support a Healthcheck as described in: `The Management Section of the ONAP VNF Guidelines <http://onap.readthedocs.io/en/latest/submodules/vnfrqts/requirements.git/docs/Chapter7.html#vnf-rest-apis>`_.
+  1. VNFs must support a Healthcheck as described in: `The Management Section of the ONAP VNF Guidelines <http://onap.readthedocs.io/en/beijing/submodules/vnfrqts/requirements.git/docs/Chapter7.html#vnf-rest-apis>`_.
 	a. R-31809 is the requirement dictating the need for VNF Healthchecks.
-	b. The Ansible Healthcheck Playbook description may be found in `The Ansible Standards and Capabilities Section <http://onap.readthedocs.io/en/latest/submodules/vnfrqts/requirements.git/docs/Chapter7.html#ansible-standards-and-capabilities>`_. 
-  2. VNF Heat Templates must be built according the `VNF Modularity Rules <http://onap.readthedocs.io/en/latest/submodules/vnfrqts/requirements.git/docs/Chapter4.html#d-vnf-modularity>`_.
+	b. The Ansible Healthcheck Playbook description may be found in `The Ansible Standards and Capabilities Section <http://onap.readthedocs.io/en/beijing/submodules/vnfrqts/requirements.git/docs/Chapter7.html#ansible-standards-and-capabilities>`_. 
+  2. VNF Heat Templates must be built according the `VNF Modularity Rules <http://onap.readthedocs.io/en/beijing/submodules/vnfrqts/requirements.git/docs/Chapter4.html#d-vnf-modularity>`_.
 	a. The VF_Module to be scaled must be built according the VNF Modularity Rules for Incremental Modules.
-  3. Configuration of the VNF must be done via NETCONF, Chef, or Ansible as described in `Configuration Management <http://onap.readthedocs.io/en/latest/submodules/vnfrqts/requirements.git/docs/Chapter7.html#c-configuration-management>`_.
+  3. Configuration of the VNF must be done via NETCONF, Chef, or Ansible as described in `Configuration Management <http://onap.readthedocs.io/en/beijing/submodules/vnfrqts/requirements.git/docs/Chapter7.html#configuration-management>`_.
 
 
 .. |image0| image:: Scale_Out_Workflow.png

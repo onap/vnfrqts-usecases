@@ -12,38 +12,34 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
-
 VNF Use Case Release Notes
 =============================
 
 Version: 1.0.0
 --------------
 
-
 :Release Date: 2018-03-29
 
-
-
 **New Features**
-	Initial release of VNF Use Cases for Open Network Automation Platform (ONAP)
+    Initial release of VNF Use Cases for Open Network Automation
+    Platform (ONAP)
 
 **Bug Fixes**
-	- None
+    - None
 
 **Known Issues**
-	- No known issues
+    - No known issues
 
 **Security Issues**
-	- No known security issues.
+    - No known security issues.
 
 **Upgrade Notes**
-	- Initial release - none
+    - Initial release - none
 
 **Deprecation Notes**
-	- Initial release - none
+    - Initial release - none
 
 **Other**
-
 ===========
 
 End of Release Notes

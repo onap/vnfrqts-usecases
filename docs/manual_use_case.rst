@@ -15,7 +15,7 @@
 .. contents::
   :local:
 
-**Manual Scale Out Use Case**
+Manual Scale Out Use Case
 ==================================
 
 Since its Beijing Release, ONAP will support the ability to manually scale

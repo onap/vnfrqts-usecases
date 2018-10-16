@@ -16,54 +16,80 @@
   :local:
 
 Manual Scale Out Use Case
-==================================
+=========================
 
-Since its Beijing Release, ONAP will support the ability to manually scale
-out VNF Components. Below is the Sequence Diagram for how Manual Scale Out
-will work in ONAP.
+In the Casablanca release, ONAP will support the ability to both manually and
+automatically scale out a VNF component.  Below is the sequence diagram
+for how scaling will work.
 
-|image0|
+|scale_out_design_time|
+
+|scale_out_run_time|
 
 Description of Workflow
----------------------------------------------
+-----------------------
 
-At a high level the way Manual Scale Out will work is:
+At a high level the way Scale Out will work is:
 
- 1. Using VID, the operator will choose to scale out a VNFC by picking a
-    VF_Module to scale and choosing which controller is responsible for
-    that VNF.
- 2. VID sends the Scale Out Request to SO.
- 3. When SO receives the Scaling request it will first send a request to
-    the appropriate controller (APPC or SDNC) to execute a Healthcheck on the
-    VNF.
- 4. Once the Healthcheck has been run, SO executes the Heat Template
-    associated with the VF Module requested by the VID Operator.
- 5. After the new component(s) have been instantiated SO calls the
-    responsible controller (via DMaaP) to configure the new instances.
- 6. Finally a Healthcheck is run to ensure that the entire VNF is Operating
-    as it should.
+1. ``VF_Modules`` (VNFC’s) may be scaled out with either one of two methods:
+
+   a. Using VID, the operator will choose to scale out a VNFC by picking
+      a ``VF_Module`` to scale
+   b. An operator may define an operating policy (and associated guard
+      policies) to trigger a scaling operation automatically.
+
+      * As an example, the operating policy may be when the output of an
+        application load balancer crosses a bandwidth threshold, then increase
+        the number of instances of the application.
+      * Examples of a guard policies:
+
+         1. If a scaling operation has run within the past X minutes, then do
+            not scale.
+         2. If the number of instance is <= ``MIN_INSTANCES``
+            or >= ``MAX_INSTANCES``, then do not scale.
+
+2. VID or Policy sends the Scale Out Request to SO.
+3. When SO receives the Scaling request it will first send a request to the
+   appropriate controller (APPC or SDNC) to execute a health check on the VNF.
+4. Once the health check has been run, SO executes the Heat Template associated
+   with the VF Module requested by the VID Operator or the operational policy.
+5. After the new component(s) have been instantiated SO calls the responsible
+   controller (via DMaaP) to configure the new instances using Ansible, Chef,
+   or Netconf.
+6. Finally a health check is run to ensure that the entire VNF is Operating
+   as it should.
 
 
 VNF Impacts
-------------------------
+-----------
 
 For VNFs to make use of the Manual Scaling Capabilities of ONAP, they must
 support the following functionality:
 
-  1. VNFs must support a Healthcheck as described in: `The Management Section of the ONAP VNF Guidelines <http://onap.readthedocs.io/en/latest/submodules/vnfrqts/requirements.git/docs/Chapter7.html#vnf-rest-apis>`_.
+   1. VNFs must support a Healthcheck as described in:
+      :doc:`The Management Section of the ONAP VNF Guidelines<../../../requirements.git/docs/Chapter7/Configuration-Management.html>`.
 
-    a. R-31809 is the requirement dictating the need for VNF Healthchecks.
-    b. The Ansible Healthcheck Playbook description may be found in `The Ansible Standards and Capabilities Section <http://onap.readthedocs.io/en/latest/submodules/vnfrqts/requirements.git/docs/Chapter7.html#ansible-standards-and-capabilities>`_.
+      a. R-41430  is the requirement dictating the need for VNF Healthchecks.
+      b. The health check may be supported using REST, Ansible, or Chef
 
-  2. VNF Heat Templates must be built according the `VNF Modularity Rules <http://onap.readthedocs.io/en/latest/submodules/vnfrqts/requirements.git/docs/Chapter4.html#d-vnf-modularity>`_.
+         * REST health check requirements can be found in the
+           :doc:`REST APIs section<../../../requirements.git/docs/Chapter7/Configuration-Management.html#vnf-rest-apis>`
+         * The Ansible health check playbook can be found in the
+           :doc:`Ansible Playbook Requirements section<../../../requirements.git/docs/Chapter7/Configuration-Management.html#vnf-rest-apis#ansible-playbook-requirements>`
 
-    a. The VF_Module to be scaled must be built according the VNF
-       Modularity Rules for Incremental Modules.
+   2. R-43413 states that a "VNF MUST utilize a modular Heat Orchestration
+      Template design to support scaling". The description of this design may
+      be found in the
+      :doc:`ONAP VNF Modularity Overview section<../../../requirements.git/docs/Chapter5/Heat/ONAP Heat Orchestration Templates Overview.html#onap-vnf-modularity-overview>`
+      of the Heat Requirements.
 
-  3. Configuration of the VNF must be done via NETCONF, Chef, or Ansible
-     as described in `Configuration Management <http://onap.readthedocs.io/en/latest/submodules/vnfrqts/requirements.git/docs/Chapter7.html#c-configuration-management>`_.
+      a. The ``VF_Module`` to be scaled must be built according to the VNF
+         Modularity Rules for Incremental Modules
 
+   3. Configuration of the VNF must be done via NETCONF, Chef, or Ansible as
+      described in the :doc:`Configuration Management<./../../requirements.git/docs/Chapter7/Configuration-Management.html#configuration-management>`
 
-.. |image0| image:: Scale_Out_Workflow.png
-   :width: 8in
-   :height: 9in
+.. |scale_out_design_time| image:: manual_scale_out_design_time.png
+
+.. |scale_out_run_time| image:: manual_scale_out_run_time.png
+

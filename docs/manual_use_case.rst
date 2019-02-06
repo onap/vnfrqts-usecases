@@ -89,4 +89,3 @@ support the following functionality:
 .. |scale_out_design_time| image:: manual_scale_out_design_time.png
 
 .. |scale_out_run_time| image:: manual_scale_out_run_time.png
-

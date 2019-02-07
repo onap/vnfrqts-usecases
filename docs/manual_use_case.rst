@@ -67,12 +67,12 @@ For VNFs to make use of the Manual Scaling Capabilities of ONAP, they must
 support the following functionality:
 
    1. VNFs must support a Healthcheck as described in:
-      :doc:`The Management Section of the ONAP VNF Guidelines<../../../vnfrqts/requirements.git/docs/Chapter7/Configuration-Management>`.
+      :ref:`onap_management_requirements`.
 
       a. R-41430  is the requirement dictating the need for VNF Healthchecks.
       b. The health check may be supported using REST, Ansible, or Chef
 
-         * REST health check requirements can be found in the :ref:`vnf_rest_apis`
+         * REST health check requirements can be found in the :ref:`xnf_rest_apis`
          * The Ansible health check playbook can be found in the :ref:`ansible_playbook_requirements`
 
    2. R-43413 states that a "VNF MUST utilize a modular Heat Orchestration
@@ -84,7 +84,7 @@ support the following functionality:
          Modularity Rules for Incremental Modules
 
    3. Configuration of the VNF must be done via NETCONF, Chef, or Ansible as
-      described in the :doc:`Configuration Management<../../../vnfrqts/requirements.git/docs/Chapter7/Configuration-Management>`
+      described in the :ref:`vnf_configuration_management`
 
 .. |scale_out_design_time| image:: manual_scale_out_design_time.png
 

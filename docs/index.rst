@@ -18,6 +18,7 @@ VNF Provider Use Cases
 
 .. toctree::
     :titlesonly:
+    :numbered:
 
     manual_use_case
 

@@ -12,19 +12,178 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 
-.. contents::
-  :local:
-
 Manual Scale Out Use Case
 =========================
+
+.. contents:: Table of Contents
+   :depth: 4
+   :backlinks: entry
+
+
+Overview
+--------
 
 In the Casablanca release, ONAP will support the ability to both manually and
 automatically scale out a VNF component.  Below is the sequence diagram
 for how scaling will work.
 
-|scale_out_design_time|
 
-|scale_out_run_time|
+Design Time Diagram
+^^^^^^^^^^^^^^^^^^^
+
+.. uml::
+   :align: center
+   :caption: **Scale Out Sequence Diagram** - Design Time
+
+   @startuml
+
+   title Message Style - Scale Out Sequence Diagram - Design Time
+
+   skinparam sequenceMessageAlign center
+
+   Participant "Service Designer" as SD
+   Participant SDC
+   Participant CLAMP
+   Participant CDT
+   Participant APPC
+   Participant SDNC
+   Participant Policy
+   Participant SO
+   Participant DCAE
+
+   SD -> SDC: <back:white>Onboarding Package</back>
+   SD -> SDC: <back:white>Set Scaling Parameters</back>
+
+   SDC -> SO: <back:white>Send Heat Templates and Image Files</back>
+   SDC -> SDNC: <back:white>Send Heat Templates and Image Files</back>
+   SDC -> SDNC: <back:white>Send Preload files</back>
+   SDC -> DCAE: <back:white>Threshold Scaling Events</back>
+
+   SD -> CLAMP: <back:white>Gaurd Policies</back>
+   SD -> CLAMP: <back:white>Operational Policies</back>
+   SD -> CLAMP: <back:white>Configuration Data</back>
+
+   CLAMP -> Policy: <back:white>Send Policies to Policy Engine Including VNF Configuration Data and VF_Module Name</back>
+
+   SD -> CDT: <back:white>Parameter definition template for each LCM action (ConfigScaleOut, Healthcheck)</back>
+
+   CDT -> APPC: <back:white>Save Parameter Definition Template to APPC</back>
+
+   @enduml
+
+
+
+Run Time Diagram
+^^^^^^^^^^^^^^^^
+
+.. uml::
+   :align: center
+   :caption: **Scaling Use Case Sequence Diagram** - Run Time
+
+   @startuml
+
+   title Message Style - Scaling Use Case Sequence Diagram - Run Time
+
+   skinparam sequenceMessageAlign center
+
+   Participant DCAE
+   Participant Policy
+   Participant VID
+   Participant SO
+   Participant Controller
+   Participant SDNC
+   Participant AAI
+   Participant VNF
+
+   group Manual Scaling
+       VID -> SO: Manual Scale Out Request\n(Via DMaaP)
+   end
+
+   group Closed Loop Scaling
+       DCAE -> Policy: Trigger Scale Out Event
+       activate Policy
+       |||
+       Policy -> Policy: Sanity Check (Guard Policies)
+       |||
+       Policy -> SO: <back:white>Closed Loop Scale Out Request</back>
+       deactivate Policy
+       activate SO
+   end
+
+   group Healthcheck
+       SO -> AAI: <back:white>Retrieve VNF Level ipv4-oam-address</back>
+       note left
+           Prerequisite: Heatbridge will update
+           AAI with all IP addresses on initial
+           instantiation
+       end note
+       AAI -> SO: <back:white>Return VNF Level ipv4-oam-address</back>
+       |||
+       SO -> SO: Controller Look up
+       activate Controller
+       SO -> Controller: Healthcheck
+       Controller -> VNF: Healthcheck (REST)
+       deactivate Controller
+   end
+
+   group Instantiation
+       SO -> AAI: Create VF-Module in AAI
+       note left
+           Homing and Capacity is
+           not shown in this
+           diagram. If H&C check is
+           done then SO will call
+           OOF prior to calling
+           SDNC for resource
+           assignment.
+       end note
+       activate AAI
+       deactivate AAI
+       SO -> SDNC: <back:white>VF-Module Resource Assignment</back>
+       activate SDNC
+       SDNC -> SDNC: Heat & Resource Assignment
+       |||
+       SDNC -> AAI: Create VF-Module Relationship & Retrieve Networks
+       deactivate SDNC
+       SO -> VNF: <back:white>Create VF_Module in Cloud environment via Heatstack</back>
+       note left
+           SO will call the Rainy Day
+           Handling and/or Manual
+           Handling building blocks
+           whenever it detects a
+           failure in the WorkFlow
+       end note
+       SO -> AAI: Update the Heatstack ID
+   end
+
+   group Configuration
+       SO -> SDNC: <back:white>Request Configuration Parameter Values</back>
+       SDNC -> SO: <back:white>Return Configuration Parameter Values</back>
+       |||
+       SO -> SO: Build ConfigScaleOut Payload
+       SO -> SO: Contoller Look up
+       SO -> Controller: ConfigScaleOut
+       activate Controller
+       Controller -> Controller: Construct VNF ScaleOut Request
+       Controller -> VNF: Configure VNF (Netconf)
+       deactivate Controller
+   end
+
+   group Healthcheck
+       SO -> AAI: <back:white>Retrieve VNF Level ipv4-oam-address</back>
+       AAI -> SO: <back:white>Return VNF Level ipv4-oam-address</back>
+       |||
+       SO -> SO: Controller Look up
+       activate Controller
+       SO -> Controller: Healthcheck
+       Controller -> VNF: Healthcheck (REST)
+       deactivate Controller
+       deactivate SO
+   end
+
+   @enduml
+
+
 
 Description of Workflow
 -----------------------
@@ -85,7 +244,3 @@ support the following functionality:
 
    3. Configuration of the VNF must be done via NETCONF, Chef, or Ansible as
       described in the :ref:`vnf_configuration_management`
-
-.. |scale_out_design_time| image:: manual_scale_out_design_time.png
-
-.. |scale_out_run_time| image:: manual_scale_out_run_time.png

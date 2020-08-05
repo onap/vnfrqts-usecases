@@ -1,4 +1,5 @@
 # UUID                                                                           	Group Name
 #
 daebbf523be390041a1a9c0e340a6d833aae5043                                         	GitHub Replication
+e509d696e099c16b592a44f530f6dab3486fa371                                         	saml/onap-gerrit-vnfrqts-usecases-committers
 ldap:cn=onap-gerrit-vnfrqts-usecases-committers,ou=Groups,dc=freestandards,dc=org	ldap/onap-gerrit-vnfrqts-usecases-committers
